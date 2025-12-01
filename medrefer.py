@@ -1,6 +1,5 @@
-import openai
+import litellm
 import os
-import random
 import re
 
 class MedReferral:
@@ -34,7 +33,7 @@ class MedReferral:
             "Neonatologist",
             "Nuclear Medicine Specialist",
             "Obstetrician",
-            "Occupational Medicine Specialist"
+            "Occupational Medicine Specialist",
             "Oncologist",
             "Orthopedic Surgeon",
             "Ophthalmologist",
@@ -58,7 +57,7 @@ class MedReferral:
     )
     
     def __init__(self):
-        openai.api_key = os.getenv("OPENAI_API_KEY")
+        litellm.api_key = os.getenv("OPENAI_API_KEY")
     
     def get_specialist_recommendation(self, question):
         """
@@ -85,8 +84,8 @@ class MedReferral:
         """
 
         try:
-            response = openai.chat.completions.create(
-                model="gpt-4o", 
+            response = litellm.completion(
+                model="gpt-4o",
                 messages=[{"role": "system", "content": "You are a helpful medical assistant."},
                           {"role": "user", "content": prompt}],
                 max_tokens=100

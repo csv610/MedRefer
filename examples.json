@@ -1,10 +1,17 @@
 {
-  "Internal Medicine": [
-    "Who should I see for frequent fatigue and body aches?",
-    "Which doctor can help me with frequent headaches and dizziness?",
-    "Who can diagnose the cause of my fluctuating blood pressure?",
-    "Which specialist should I visit for unexplained weight loss?",
-    "Who can help me manage my prediabetes?"
+  "Allergist": [
+    "Who specializes in treating seasonal allergies?",
+    "Which doctor should I see for frequent allergic reactions?",
+    "Who can diagnose and treat food allergies?",
+    "Which specialist can help with chronic hives?",
+    "Who should I see for a dust mite allergy?"
+  ],
+  "Anesthesiologist": [
+    "Who manages anesthesia during my surgery?",
+    "Which doctor specializes in pain relief for medical procedures?",
+    "Who monitors vital signs during operations?",
+    "Which specialist ensures I don't feel pain during surgery?",
+    "Who can help with anesthesia complications?"
   ],
   "Cardiologist": [
     "Which doctor should I see for chest pain while walking?",
@@ -13,12 +20,47 @@
     "Who should I see for shortness of breath during exercise?",
     "Which doctor can check if I have a heart problem?"
   ],
+  "Cardiothoracic Surgeon": [
+    "Who performs heart bypass surgery?",
+    "Which doctor should I see for a heart valve replacement?",
+    "Who specializes in lung surgery?",
+    "Which surgeon can perform a heart transplant?",
+    "Who should I visit for coronary artery disease that needs surgery?"
+  ],
+  "Colorectal Surgeon": [
+    "Who specializes in treating hemorrhoids and anal fissures?",
+    "Which surgeon performs colon cancer surgery?",
+    "Who should I see for inflammatory bowel disease requiring surgery?",
+    "Which specialist can treat rectal prolapse?",
+    "Who performs ostomy procedures?"
+  ],
+  "Child and Adolescent Psychiatrist": [
+    "Who specializes in treating childhood anxiety disorders?",
+    "Which doctor can diagnose ADHD in children?",
+    "Who should I see for my teen's depression?",
+    "Which specialist treats behavioral problems in adolescents?",
+    "Who can help with eating disorders in young people?"
+  ],
+  "Dermatologist": [
+    "Who should I see for persistent skin rashes?",
+    "Which doctor can help with acne that won't go away?",
+    "Who specializes in diagnosing suspicious moles?",
+    "Which specialist can treat hair loss?",
+    "Who should I visit for a fungal infection on my nails?"
+  ],
   "Endocrinologist": [
     "Who should I visit for sudden weight gain and fatigue?",
     "Which doctor can check if I have a thyroid problem?",
     "Who specializes in diabetes management?",
     "Which doctor should I see for hormonal imbalances?",
     "Who can diagnose the cause of my excessive thirst and frequent urination?"
+  ],
+  "Forensic Psychiatrist": [
+    "Who evaluates mental competency for legal cases?",
+    "Which doctor provides psychiatric testimony for court?",
+    "Who assesses risk of violence in legal proceedings?",
+    "Which specialist evaluates criminal responsibility?",
+    "Who performs custody evaluations?"
   ],
   "Gastroenterologist": [
     "Who should I see for frequent bloating and stomach pain?",
@@ -27,12 +69,68 @@
     "Which specialist can help with unexplained nausea after eating?",
     "Who should I see for black or bloody stools?"
   ],
+  "General Surgeon": [
+    "Who should I see for a hernia that needs surgery?",
+    "Which doctor performs gallbladder removal?",
+    "Who specializes in surgical treatment of appendicitis?",
+    "Which surgeon can remove a cyst or lump?",
+    "Who should I see for a non-healing wound that may require surgery?"
+  ],
+  "Geriatrician": [
+    "Who specializes in elderly healthcare?",
+    "Which doctor can help with memory loss in seniors?",
+    "Who should I see for frequent falls and balance issues?",
+    "Which specialist can help manage multiple chronic conditions in older adults?",
+    "Who can provide care for age-related hearing loss and vision changes?"
+  ],
+  "Geriatric Psychiatrist": [
+    "Who treats depression in elderly patients?",
+    "Which doctor specializes in dementia care?",
+    "Who should I see for behavioral issues in seniors with Alzheimer's?",
+    "Which specialist manages anxiety in older adults?",
+    "Who can help with medication management in elderly patients?"
+  ],
+  "Gynecologist": [
+    "Who should I see for irregular periods?",
+    "Which doctor performs pap smears and cervical cancer screening?",
+    "Who can diagnose the cause of pelvic pain?",
+    "Which specialist treats endometriosis?",
+    "Who should I visit for fibroid tumors?"
+  ],
   "Hematologist": [
     "Who can diagnose the cause of my frequent nosebleeds?",
     "Which doctor should I see for anemia treatment?",
     "Who can help me understand my abnormal blood test results?",
     "Which specialist treats clotting disorders?",
     "Who should I see for chronic fatigue and pale skin?"
+  ],
+  "Infectious Disease Specialist": [
+    "Who should I see for recurring infections?",
+    "Which doctor specializes in treating tuberculosis?",
+    "Who can diagnose the cause of my prolonged fever?",
+    "Which specialist should I visit for HIV or other viral infections?",
+    "Who can help with travel-related illnesses?"
+  ],
+  "Internal Medicine Doctor (Internist)": [
+    "Who should I see for frequent fatigue and body aches?",
+    "Which doctor can help me with frequent headaches and dizziness?",
+    "Who can diagnose the cause of my fluctuating blood pressure?",
+    "Which specialist should I visit for unexplained weight loss?",
+    "Who can help me manage my prediabetes?"
+  ],
+  "Immunologist": [
+    "Who specializes in diagnosing immune system disorders?",
+    "Which doctor can help with recurrent severe infections?",
+    "Who treats autoimmune diseases like lupus?",
+    "Which specialist manages immunodeficiency disorders?",
+    "Who can help with chronic inflammatory conditions?"
+  ],
+  "Maternal-Fetal Medicine Specialist": [
+    "Who specializes in high-risk pregnancies?",
+    "Which doctor can monitor my pregnancy complications?",
+    "Who performs prenatal testing and genetic counseling?",
+    "Which specialist treats gestational diabetes in pregnancy?",
+    "Who should I see for concerns about my baby's development?"
   ],
   "Nephrologist": [
     "Who should I see for frequent kidney infections?",
@@ -48,61 +146,47 @@
     "Which specialist can help me with sudden dizziness and balance issues?",
     "Who should I visit for memory loss and confusion?"
   ],
-  "Oncologist": [
-    "Who should I see if I found a lump on my body?",
-    "Which doctor specializes in cancer treatment?",
-    "Who can help me understand my biopsy results?",
-    "Which specialist can diagnose and treat leukemia?",
-    "Who should I visit if I have unexplained weight loss and night sweats?"
-  ],
-  "Pulmonologist": [
-    "Who should I see for a chronic cough that won’t go away?",
-    "Which doctor can help me manage asthma symptoms?",
-    "Who specializes in diagnosing lung diseases?",
-    "Which specialist should I visit for shortness of breath even at rest?",
-    "Who can help me if I wake up gasping for air at night?"
-  ],
-  "Rheumatologist": [
-    "Who specializes in treating joint pain and stiffness?",
-    "Which doctor can diagnose autoimmune diseases?",
-    "Who should I see for chronic back pain that doesn’t go away?",
-    "Which specialist can help with swelling in multiple joints?",
-    "Who should I visit for persistent muscle pain and fatigue?"
-  ],
-  "Infectious Disease Specialist": [
-    "Who should I see for recurring infections?",
-    "Which doctor specializes in treating tuberculosis?",
-    "Who can diagnose the cause of my prolonged fever?",
-    "Which specialist should I visit for HIV or other viral infections?",
-    "Who can help with travel-related illnesses?"
-  ],
-  "Geriatrician": [
-    "Who specializes in elderly healthcare?",
-    "Which doctor can help with memory loss in seniors?",
-    "Who should I see for frequent falls and balance issues?",
-    "Which specialist can help manage multiple chronic conditions in older adults?",
-    "Who can provide care for age-related hearing loss and vision changes?"
-  ],
-  "General Surgeon": [
-    "Who should I see for a hernia that needs surgery?",
-    "Which doctor performs gallbladder removal?",
-    "Who specializes in surgical treatment of appendicitis?",
-    "Which surgeon can remove a cyst or lump?",
-    "Who should I see for a non-healing wound that may require surgery?"
-  ],
-  "Cardiothoracic Surgeon": [
-    "Who performs heart bypass surgery?",
-    "Which doctor should I see for a heart valve replacement?",
-    "Who specializes in lung surgery?",
-    "Which surgeon can perform a heart transplant?",
-    "Who should I visit for coronary artery disease that needs surgery?"
-  ],
   "Neurosurgeon": [
     "Who should I see for a herniated disc that may need surgery?",
     "Which doctor performs brain tumor surgery?",
     "Who specializes in treating spinal cord injuries?",
     "Which surgeon can help with chronic nerve pain?",
     "Who should I visit for hydrocephalus that needs surgical treatment?"
+  ],
+  "Neonatologist": [
+    "Who specializes in caring for premature babies?",
+    "Which doctor treats newborns with birth defects?",
+    "Who should I see if my newborn has breathing problems?",
+    "Which specialist cares for babies in the intensive care unit?",
+    "Who manages feeding and nutrition for critically ill newborns?"
+  ],
+  "Nuclear Medicine Specialist": [
+    "Who performs thyroid scanning and imaging?",
+    "Which doctor uses radioactive tracers for diagnosis?",
+    "Who specializes in cardiac imaging?",
+    "Which specialist performs bone scans?",
+    "Who can assess kidney function with nuclear imaging?"
+  ],
+  "Obstetrician": [
+    "Who should I see for prenatal care during pregnancy?",
+    "Which doctor delivers babies?",
+    "Who monitors my baby's growth during pregnancy?",
+    "Which specialist performs cesarean sections?",
+    "Who can advise on pregnancy risks and complications?"
+  ],
+  "Occupational Medicine Specialist": [
+    "Who treats work-related injuries?",
+    "Which doctor can evaluate my occupational exposure?",
+    "Who assesses workplace safety and health?",
+    "Which specialist performs fitness-for-duty evaluations?",
+    "Who can help with ergonomic recommendations for my job?"
+  ],
+  "Oncologist": [
+    "Who should I see if I found a lump on my body?",
+    "Which doctor specializes in cancer treatment?",
+    "Who can help me understand my biopsy results?",
+    "Which specialist can diagnose and treat leukemia?",
+    "Who should I visit if I have unexplained weight loss and night sweats?"
   ],
   "Orthopedic Surgeon": [
     "Who specializes in treating bone fractures?",
@@ -111,15 +195,8 @@
     "Which specialist can treat a shoulder dislocation?",
     "Who performs surgeries for spinal deformities?"
   ],
-  "Plastic Surgeon": [
-    "Who should I see for reconstructive surgery after an accident?",
-    "Which doctor specializes in cosmetic surgery?",
-    "Who can perform a breast reduction for medical reasons?",
-    "Which surgeon can help with burn scars?",
-    "Who should I visit for facial reconstructive surgery?"
-  ],
   "Ophthalmologist": [
-    "Who should I see for blurry vision that glasses don’t fix?",
+    "Who should I see for blurry vision that glasses don't fix?",
     "Which doctor treats cataracts?",
     "Who specializes in diagnosing and treating glaucoma?",
     "Which specialist can perform LASIK surgery?",
@@ -130,28 +207,56 @@
     "Which doctor treats ear pain and hearing loss?",
     "Who specializes in treating throat infections?",
     "Which specialist can diagnose and treat dizziness and vertigo?",
-    "Who should I visit for voice hoarseness that won’t go away?"
+    "Who should I visit for voice hoarseness that won't go away?"
   ],
-  "Urologist": [
-    "Who specializes in treating kidney stones?",
-    "Which doctor can diagnose and treat prostate problems?",
-    "Who should I see for frequent urinary tract infections?",
-    "Which specialist can help with male infertility?",
-    "Who can diagnose the cause of blood in my urine?"
+  "Pediatrician": [
+    "Who should I see for my child's regular check-ups?",
+    "Which doctor treats common childhood illnesses?",
+    "Who manages my child's vaccinations?",
+    "Which specialist evaluates developmental delays?",
+    "Who can help with my child's behavioral concerns?"
   ],
-  "Dermatologist": [
-    "Who should I see for persistent skin rashes?",
-    "Which doctor can help with acne that won’t go away?",
-    "Who specializes in diagnosing suspicious moles?",
-    "Which specialist can treat hair loss?",
-    "Who should I visit for a fungal infection on my nails?"
+  "Pathologist": [
+    "Who interprets biopsy samples?",
+    "Which doctor analyzes tissue for disease?",
+    "Who determines the stage and type of cancer?",
+    "Which specialist performs autopsies?",
+    "Who analyzes lab results for abnormalities?"
   ],
-  "Allergist": [
-    "Who specializes in treating seasonal allergies?",
-    "Which doctor should I see for frequent allergic reactions?",
-    "Who can diagnose and treat food allergies?",
-    "Which specialist can help with chronic hives?",
-    "Who should I see for a dust mite allergy?"
+  "Pulmonologist": [
+    "Who should I see for a chronic cough that won't go away?",
+    "Which doctor can help me manage asthma symptoms?",
+    "Who specializes in diagnosing lung diseases?",
+    "Which specialist should I visit for shortness of breath even at rest?",
+    "Who can help me if I wake up gasping for air at night?"
+  ],
+  "Pediatric Surgeon": [
+    "Who performs surgery on children?",
+    "Which surgeon treats birth defects in children?",
+    "Who specializes in operating on premature infants?",
+    "Which specialist performs appendectomies in kids?",
+    "Who can surgically correct cleft palate in children?"
+  ],
+  "Plastic Surgeon": [
+    "Who should I see for reconstructive surgery after an accident?",
+    "Which doctor specializes in cosmetic surgery?",
+    "Who can perform a breast reduction for medical reasons?",
+    "Which surgeon can help with burn scars?",
+    "Who should I visit for facial reconstructive surgery?"
+  ],
+  "Physical Medicine & Rehabilitation (PM&R) Specialist": [
+    "Who specializes in rehabilitation after stroke?",
+    "Which doctor helps with spinal cord injury recovery?",
+    "Who creates treatment plans for mobility problems?",
+    "Which specialist manages chronic pain rehabilitation?",
+    "Who helps patients regain function after major surgery?"
+  ],
+  "Pain Management Specialist": [
+    "Who should I see for chronic pain in my lower back?",
+    "Which doctor specializes in treating nerve pain?",
+    "Who can help manage arthritis pain?",
+    "Which specialist can treat post-surgical pain?",
+    "Who should I visit for pain caused by a slipped disc?"
   ],
   "Psychiatrist": [
     "Who specializes in treating severe anxiety and depression?",
@@ -160,12 +265,53 @@
     "Which specialist can help with PTSD?",
     "Who can prescribe medication for ADHD?"
   ],
-  "Pain Management Specialist": [
-    "Who should I see for chronic pain in my lower back?",
-    "Which doctor specializes in treating nerve pain?",
-    "Who can help manage arthritis pain?",
-    "Which specialist can treat post-surgical pain?",
-    "Who should I visit for pain caused by a slipped disc?"
+  "Rheumatologist": [
+    "Who specializes in treating joint pain and stiffness?",
+    "Which doctor can diagnose autoimmune diseases?",
+    "Who should I see for chronic back pain that doesn't go away?",
+    "Which specialist can help with swelling in multiple joints?",
+    "Who should I visit for persistent muscle pain and fatigue?"
+  ],
+  "Radiologist": [
+    "Who interprets X-rays and CT scans?",
+    "Which doctor specializes in medical imaging?",
+    "Who performs ultrasound examinations?",
+    "Which specialist reads MRI images?",
+    "Who can diagnose conditions using imaging?"
+  ],
+  "Sports Medicine Doctor": [
+    "Who treats athletic injuries and sprains?",
+    "Which doctor specializes in sports-related conditions?",
+    "Who can help with tendon and ligament injuries?",
+    "Which specialist works with athletes on injury prevention?",
+    "Who performs joint injections for sports injuries?"
+  ],
+  "Sleep Medicine Specialist": [
+    "Who should I see for severe sleep apnea?",
+    "Which doctor can diagnose my insomnia?",
+    "Who specializes in sleep disorders?",
+    "Which specialist evaluates sleepwalking?",
+    "Who can help with narcolepsy?"
+  ],
+  "Trauma Surgeon": [
+    "Who treats life-threatening injuries?",
+    "Which surgeon specializes in emergency operations?",
+    "Who manages severe burns?",
+    "Which specialist treats traumatic brain injuries?",
+    "Who can perform emergency surgery for accidents?"
+  ],
+  "Transplant Surgeon": [
+    "Who performs organ transplants?",
+    "Which surgeon specializes in kidney transplants?",
+    "Who can perform liver transplantation?",
+    "Which specialist handles heart transplant surgery?",
+    "Who manages post-transplant surgical care?"
+  ],
+  "Urologist": [
+    "Who specializes in treating kidney stones?",
+    "Which doctor can diagnose and treat prostate problems?",
+    "Who should I see for frequent urinary tract infections?",
+    "Which specialist can help with male infertility?",
+    "Who can diagnose the cause of blood in my urine?"
   ]
 }
-
