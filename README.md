@@ -29,11 +29,17 @@ MedRefer uses large language models (powered by LiteLLM) to intelligently interp
    ```
 
 3. **Set up API credentials**:
+
+   For default model (Google Gemini 2.5 Flash):
    ```bash
-   export OPENAI_API_KEY="your-api-key-here"
+   export GOOGLE_API_KEY="your-google-api-key-here"
    ```
 
-   For other LLM providers, set the appropriate environment variable (e.g., `ANTHROPIC_API_KEY` for Claude).
+   For other LLM providers, set the appropriate environment variable:
+   ```bash
+   export OPENAI_API_KEY="your-openai-api-key"        # For OpenAI
+   export ANTHROPIC_API_KEY="your-anthropic-api-key"  # For Claude
+   ```
 
 ## Usage
 
@@ -86,17 +92,18 @@ See the complete list in the `medrefer.py` file under the `medical_specialists` 
 
 ### Changing the LLM Model
 
-To use a different LLM model, modify the `model` parameter in the `get_specialist_recommendation` method:
+The default model is **Gemini 2.5 Flash**. To use a different LLM model, modify the `model` parameter in the `get_specialist_recommendation` method:
 
 ```python
 response = litellm.completion(
-    model="claude-3-sonnet-20240229",  # Use Claude instead
+    model="gpt-4o",  # Use OpenAI instead
     messages=[...],
     max_tokens=100
 )
 ```
 
 Supported models via LiteLLM include:
+- Google: `gemini-2.5-flash` (default), `gemini-2.0-flash`, `gemini-pro`
 - OpenAI: `gpt-4o`, `gpt-4-turbo`, `gpt-3.5-turbo`
 - Anthropic: `claude-3-opus`, `claude-3-sonnet`, `claude-3-haiku`
 - And many more...
@@ -104,9 +111,15 @@ Supported models via LiteLLM include:
 ### API Configuration
 
 LiteLLM automatically detects API keys from environment variables based on the model you use:
+- Google Gemini: `GOOGLE_API_KEY` (default)
 - OpenAI: `OPENAI_API_KEY`
 - Anthropic: `ANTHROPIC_API_KEY`
 - Hugging Face: `HUGGINGFACE_API_KEY`
+
+For Google Gemini (default), set:
+```bash
+export GOOGLE_API_KEY="your-google-api-key-here"
+```
 
 ## Testing
 

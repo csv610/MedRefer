@@ -85,7 +85,7 @@ class MedReferral:
 
         try:
             response = litellm.completion(
-                model="gpt-4o",
+                model="gemini-2.5-flash",
                 messages=[{"role": "system", "content": "You are a helpful medical assistant."},
                           {"role": "user", "content": prompt}],
                 max_tokens=100
