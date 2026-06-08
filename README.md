@@ -9,11 +9,16 @@ MedRefer uses large language models (powered by LiteLLM) to intelligently interp
 ## Features
 
 - **AI-Powered Analysis**: Uses LLMs to understand medical questions and symptoms
-- **Multi-Provider Support**: Works with any LLM provider supported by LiteLLM (OpenAI, Anthropic, etc.)
+- **Multi-Provider Support**: Works with any LLM provider supported by LiteLLM (OpenAI, Anthropic, Ollama, etc.)
 - **Specialist Validation**: Validates recommendations against a predefined list of 45 medical specialties
-- **Interactive CLI**: Simple command-line interface for continuous use
-- **Error Handling**: Graceful error handling for API failures
-- **Professional Disclaimers**: Includes disclaimers reminding users to verify recommendations with healthcare professionals
+- **Case-Insensitive Matching**: Matches specialist names regardless of case (e.g., "cardiologist" → "Cardiologist")
+- **Emergency Detection**: Detects life-threatening keywords (heart attack, stroke, etc.) and directs users to call 911
+- **Input Validation**: Rejects empty, non-string, or overly long inputs with clear error messages
+- **Audit Logging**: Logs all questions and results via Python's logging module
+- **Configurable Model**: Set the LLM model via `MEDREFER_MODEL` env var or constructor parameter
+- **Interactive CLI**: Simple command-line interface with `exit`/`quit` support
+- **Error Handling**: Graceful error handling for API failures and invalid input
+- **Professional Disclaimers**: Disclaimers on all responses reminding users to verify with a healthcare professional
 
 ## Installation
 
@@ -60,8 +65,9 @@ python medrefer.py
 
 Then enter your medical question when prompted:
 ```
-Enter your medical question: I have chest pain and shortness of breath.
-Recommended Specialists: Cardiologist, Pulmonologist
+Enter your medical question (or type 'exit' / 'quit' to quit):
+> I have chest pain and shortness of breath.
+Recommended Specialists: Cardiologist, Pulmonologist (Please verify with a healthcare professional.)
 ```
 
 ### Programmatic Usage
@@ -69,8 +75,11 @@ Recommended Specialists: Cardiologist, Pulmonologist
 ```python
 from medrefer import MedReferral
 
-# Initialize the referral system
+# Initialize with default model (ollama/gemma4)
 referral = MedReferral()
+
+# Or specify a different model
+referral = MedReferral(model="gpt-4o")
 
 # Get specialist recommendations
 question = "I have severe headaches and blurry vision"
@@ -100,14 +109,16 @@ See the complete list in the `medrefer.py` file under the `medical_specialists` 
 
 ### Changing the LLM Model
 
-The default model is **Ollama Gemma4** (`ollama/gemma4`). To use a different LLM model, modify the `model` parameter in the `get_specialist_recommendation` method:
+The default model is **Ollama Gemma4** (`ollama/gemma4`). Set it via environment variable:
+
+```bash
+export MEDREFER_MODEL="gpt-4o"
+```
+
+Or pass it when creating the instance:
 
 ```python
-response = litellm.completion(
-    model="gpt-4o",  # Use OpenAI instead
-    messages=[...],
-    max_tokens=100
-)
+referral = MedReferral(model="gpt-4o")
 ```
 
 Supported models via LiteLLM include:
@@ -164,22 +175,32 @@ pytest tests/ --cov=medrefer --cov-report=html
 
 **Attributes:**
 - `medical_specialists`: A frozenset containing 45 valid medical specialist types
+- `model`: The LLM model identifier (default: `ollama/gemma4`)
 
 **Methods:**
-- `__init__()`: Initializes the API configuration
+- `__init__(model=None)`: Initializes with optional model override
 - `get_specialist_recommendation(question)`: Analyzes a medical question and returns specialist recommendations
+- `_validate_input(question)`: Validates input is non-empty, a string, and within length limits
+- `_contains_emergency_keywords(question)`: Checks for life-threatening keywords
+- `_match_specialist(name)`: Case-insensitive lookup against the specialist list
 
 ### Flow
 
 1. User provides a medical question
-2. LLM analyzes the question with context from examples
-3. Response is parsed to extract specialist names
-4. Extracted specialists are validated against the allowed list
-5. Valid specialists are returned; otherwise, a disclaimer is provided
+2. Input is validated (non-empty, proper type, within length limit)
+3. Question is checked for emergency keywords (heart attack, stroke, etc.) — if found, directs user to call 911
+4. LLM analyzes the question with context from examples
+5. Response is parsed to extract specialist names
+6. Extracted specialists are validated case-insensitively against the allowed list
+7. Valid specialists are returned with a disclaimer; otherwise, a fallback message is provided
 
 ## Error Handling
 
-The system includes try-except blocks to handle API failures gracefully. If an error occurs, a user-friendly error message is returned instead of crashing the application.
+The system handles errors at multiple levels:
+- **Input validation**: Raises `ValueError` with a clear message for empty, non-string, or overly long input
+- **Emergency detection**: Returns an immediate emergency message before any API call
+- **API failures**: Caught by try-except blocks and returned as user-friendly error messages
+- **No valid specialists**: Falls back to a message asking the user to consult a healthcare professional
 
 ## Important Disclaimers
 
