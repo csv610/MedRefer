@@ -1,16 +1,16 @@
 # MedRefer
 
-An AI-powered medical referral system that analyzes patient medical questions and recommends appropriate medical specialists using LLM models.
+An AI-powered medical referral system that analyzes patient medical questions and recommends appropriate medical specialists using LLM models (default: `ollama/gemma4` via LiteLLM).
 
 ## Overview
 
-MedRefer uses large language models (powered by LiteLLM) to intelligently interpret patient symptoms and medical questions, then recommends the most appropriate medical specialists. The system validates recommendations against a curated list of 42 medical specialties to ensure accuracy and prevent hallucinations.
+MedRefer uses large language models (powered by LiteLLM) to intelligently interpret patient symptoms and medical questions, then recommends the most appropriate medical specialists. The system validates recommendations against a curated list of 45 medical specialties to ensure accuracy and prevent hallucinations.
 
 ## Features
 
 - **AI-Powered Analysis**: Uses LLMs to understand medical questions and symptoms
 - **Multi-Provider Support**: Works with any LLM provider supported by LiteLLM (OpenAI, Anthropic, etc.)
-- **Specialist Validation**: Validates recommendations against a predefined list of 42 medical specialties
+- **Specialist Validation**: Validates recommendations against a predefined list of 45 medical specialties
 - **Interactive CLI**: Simple command-line interface for continuous use
 - **Error Handling**: Graceful error handling for API failures
 - **Professional Disclaimers**: Includes disclaimers reminding users to verify recommendations with healthcare professionals
@@ -19,26 +19,34 @@ MedRefer uses large language models (powered by LiteLLM) to intelligently interp
 
 1. **Clone the repository**:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/csv610/MedRefer.git
    cd MedRefer
    ```
 
 2. **Install dependencies**:
    ```bash
+   make install        # production only
+   # or
+   make install-dev    # with dev/test dependencies
+   ```
+   Or manually:
+   ```bash
    pip install -r requirements.txt
+   pip install -e ".[dev]"   # includes test tooling
    ```
 
-3. **Set up API credentials**:
+3. **Set up Ollama** (default model):
 
-   For default model (Google Gemini 2.5 Flash):
+   Install [Ollama](https://ollama.com) and pull the default model:
    ```bash
-   export GOOGLE_API_KEY="your-google-api-key-here"
+   ollama pull gemma4
    ```
 
    For other LLM providers, set the appropriate environment variable:
    ```bash
    export OPENAI_API_KEY="your-openai-api-key"        # For OpenAI
    export ANTHROPIC_API_KEY="your-anthropic-api-key"  # For Claude
+   export GOOGLE_API_KEY="your-google-api-key"        # For Gemini
    ```
 
 ## Usage
@@ -72,7 +80,7 @@ print(f"Recommended Specialists: {specialists}")
 
 ## Supported Medical Specialties
 
-The system supports 42 medical specialties including:
+The system supports 45 medical specialties including:
 - Allergist
 - Cardiologist
 - Dermatologist
@@ -84,7 +92,7 @@ The system supports 42 medical specialties including:
 - Orthopedic Surgeon
 - Psychiatrist
 - Urologist
-- And 31 more...
+- And 34 more...
 
 See the complete list in the `medrefer.py` file under the `medical_specialists` frozenset.
 
@@ -92,7 +100,7 @@ See the complete list in the `medrefer.py` file under the `medical_specialists` 
 
 ### Changing the LLM Model
 
-The default model is **Gemini 2.5 Flash**. To use a different LLM model, modify the `model` parameter in the `get_specialist_recommendation` method:
+The default model is **Ollama Gemma4** (`ollama/gemma4`). To use a different LLM model, modify the `model` parameter in the `get_specialist_recommendation` method:
 
 ```python
 response = litellm.completion(
@@ -103,34 +111,46 @@ response = litellm.completion(
 ```
 
 Supported models via LiteLLM include:
-- Google: `gemini-2.5-flash` (default), `gemini-2.0-flash`, `gemini-pro`
+- Ollama: `ollama/gemma4` (default), `ollama/llama3`, `ollama/mistral`
 - OpenAI: `gpt-4o`, `gpt-4-turbo`, `gpt-3.5-turbo`
+- Google: `gemini-2.5-flash`, `gemini-2.0-flash`, `gemini-pro`
 - Anthropic: `claude-3-opus`, `claude-3-sonnet`, `claude-3-haiku`
 - And many more...
 
-### API Configuration
+### API / Provider Configuration
 
-LiteLLM automatically detects API keys from environment variables based on the model you use:
-- Google Gemini: `GOOGLE_API_KEY` (default)
+LiteLLM automatically uses the right auth based on the model prefix:
+- Ollama: runs locally (no API key needed)
 - OpenAI: `OPENAI_API_KEY`
 - Anthropic: `ANTHROPIC_API_KEY`
+- Google Gemini: `GOOGLE_API_KEY`
 - Hugging Face: `HUGGINGFACE_API_KEY`
 
-For Google Gemini (default), set:
-```bash
-export GOOGLE_API_KEY="your-google-api-key-here"
-```
+## Makefile
+
+Commonly used targets (run `make help` for all):
+
+| Target | Description |
+|--------|-------------|
+| `make test` | Run all tests |
+| `make test-coverage` | Run with coverage report |
+| `make run` | Start interactive CLI |
+| `make lint` | Check Python syntax |
+| `make install-dev` | Install all dependencies |
+| `make clean` | Remove caches and build artifacts |
 
 ## Testing
 
 Run the test suite:
 ```bash
+make test
+# or
 pytest tests/ -v
 ```
 
 Run specific tests:
 ```bash
-pytest tests/test_medrefer.py::test_get_specialist_recommendation -v
+pytest tests/test_medrefer.py::TestGetSpecialistRecommendation::test_returns_valid_specialists -v
 ```
 
 Run with coverage:
@@ -143,7 +163,7 @@ pytest tests/ --cov=medrefer --cov-report=html
 ### MedReferral Class
 
 **Attributes:**
-- `medical_specialists`: A frozenset containing 42 valid medical specialist types
+- `medical_specialists`: A frozenset containing 45 valid medical specialist types
 
 **Methods:**
 - `__init__()`: Initializes the API configuration
@@ -179,7 +199,7 @@ See `requirements.txt` for exact versions.
 
 ## License
 
-[Specify your license here]
+MIT
 
 ## Contributing
 
