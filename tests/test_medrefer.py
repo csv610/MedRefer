@@ -1,295 +1,164 @@
-"""
-Tests for the MedRefer medical specialist recommendation system.
-"""
-
+import litellm
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from medrefer import MedReferral
 
 
 class TestMedReferralInit:
-    """Test MedReferral class initialization."""
+    @patch.dict("os.environ", {"OPENAI_API_KEY": "test-key-123"})
+    def test_init_sets_litellm_api_key(self):
+        with patch("litellm.api_key", ""):
+            MedReferral()
+            assert litellm.api_key == "test-key-123"
 
-    @patch.dict('os.environ', {'OPENAI_API_KEY': 'test-key-123'})
-    @patch('litellm.api_key', 'test-key-123')
-    def test_init_sets_api_key(self):
-        """Test that initialization sets the API key from environment."""
-        with patch('litellm.api_key', 'test-key-123') as mock_api_key:
-            referral = MedReferral()
-            # Verify that the instance was created
-            assert referral is not None
-
-    def test_medical_specialists_contains_expected_specialists(self):
-        """Test that medical_specialists contains expected specialist types."""
-        referral = MedReferral()
-        expected_specialists = {
-            'Cardiologist',
-            'Neurologist',
-            'Dermatologist',
-            'Psychiatrist',
-            'Oncologist',
-            'Ophthalmologist',
-            'Urologist',
-            'Endocrinologist',
-            'Gastroenterologist',
+    def test_medical_specialists_contains_expected(self):
+        expected = {
+            "Cardiologist", "Neurologist", "Dermatologist",
+            "Psychiatrist", "Oncologist", "Ophthalmologist",
+            "Urologist", "Endocrinologist", "Gastroenterologist",
         }
-        assert expected_specialists.issubset(referral.medical_specialists)
+        assert expected.issubset(MedReferral.medical_specialists)
 
     def test_medical_specialists_is_frozenset(self):
-        """Test that medical_specialists is a frozenset."""
-        referral = MedReferral()
-        assert isinstance(referral.medical_specialists, frozenset)
+        assert isinstance(MedReferral.medical_specialists, frozenset)
 
     def test_medical_specialists_count(self):
-        """Test that medical_specialists has the expected count."""
-        referral = MedReferral()
-        assert len(referral.medical_specialists) == 42
+        assert len(MedReferral.medical_specialists) == 45
 
 
 class TestGetSpecialistRecommendation:
-    """Test the get_specialist_recommendation method."""
+    @patch("litellm.completion")
+    def test_returns_valid_specialists(self, mock_completion):
+        mock_completion.return_value = _mock_response("Specialists: Cardiologist, Pulmonologist")
+        result = MedReferral().get_specialist_recommendation("chest pain")
+        assert result == "Cardiologist, Pulmonologist"
 
-    @patch('litellm.completion')
-    def test_get_specialist_recommendation_returns_valid_specialists(self, mock_completion):
-        """Test that valid specialists from LLM response are returned."""
-        # Mock the LLM response
-        mock_response = Mock()
-        mock_response.choices = [Mock()]
-        mock_response.choices[0].message.content = "Specialists: Cardiologist, Pulmonologist"
-        mock_completion.return_value = mock_response
+    @patch("litellm.completion")
+    def test_filters_invalid_specialists(self, mock_completion):
+        mock_completion.return_value = _mock_response("Specialists: Cardiologist, Quack, Neurologist")
+        result = MedReferral().get_specialist_recommendation("headache")
+        assert result == "Cardiologist, Neurologist"
 
-        referral = MedReferral()
-        result = referral.get_specialist_recommendation("I have chest pain")
+    @patch("litellm.completion")
+    def test_no_valid_specialists_returns_disclaimer(self, mock_completion):
+        mock_completion.return_value = _mock_response("Specialists: Quack, Witch Doctor")
+        result = MedReferral().get_specialist_recommendation("weird symptoms")
+        assert "Please verify with a healthcare professional." in result
 
-        assert "Cardiologist" in result
-        assert "Pulmonologist" in result
+    @patch("litellm.completion")
+    def test_missing_specialists_line(self, mock_completion):
+        mock_completion.return_value = _mock_response("Go see a doctor.")
+        result = MedReferral().get_specialist_recommendation("sick")
+        assert "Unknown Specialists" in result
 
-    @patch('litellm.completion')
-    def test_get_specialist_recommendation_filters_invalid_specialists(self, mock_completion):
-        """Test that invalid specialists are filtered out."""
-        # Mock the LLM response with an invalid specialist
-        mock_response = Mock()
-        mock_response.choices = [Mock()]
-        mock_response.choices[0].message.content = "Specialists: Cardiologist, InvalidSpecialist, Neurologist"
-        mock_completion.return_value = mock_response
-
-        referral = MedReferral()
-        result = referral.get_specialist_recommendation("I have a headache")
-
-        assert "Cardiologist" in result
-        assert "Neurologist" in result
-        assert "InvalidSpecialist" not in result
-
-    @patch('litellm.completion')
-    def test_get_specialist_recommendation_handles_no_valid_specialists(self, mock_completion):
-        """Test that a disclaimer is returned when no valid specialists are found."""
-        # Mock the LLM response with only invalid specialists
-        mock_response = Mock()
-        mock_response.choices = [Mock()]
-        mock_response.choices[0].message.content = "Specialists: InvalidSpecialist1, InvalidSpecialist2"
-        mock_completion.return_value = mock_response
-
-        referral = MedReferral()
-        result = referral.get_specialist_recommendation("I have an unusual condition")
-
-        assert "Note: Please verify with a healthcare professional." in result
-
-    @patch('litellm.completion')
-    def test_get_specialist_recommendation_handles_missing_specialists_line(self, mock_completion):
-        """Test handling when response doesn't contain 'Specialists:' line."""
-        # Mock the LLM response without the specialists line
-        mock_response = Mock()
-        mock_response.choices = [Mock()]
-        mock_response.choices[0].message.content = "I recommend seeing a doctor"
-        mock_completion.return_value = mock_response
-
-        referral = MedReferral()
-        result = referral.get_specialist_recommendation("I feel unwell")
-
-        assert "Unknown Specialists" in result or "Please verify with a healthcare professional." in result
-
-    @patch('litellm.completion')
-    def test_get_specialist_recommendation_handles_api_error(self, mock_completion):
-        """Test that API errors are handled gracefully."""
-        # Mock the LLM to raise an exception
+    @patch("litellm.completion")
+    def test_api_error(self, mock_completion):
         mock_completion.side_effect = Exception("API Connection Error")
+        result = MedReferral().get_specialist_recommendation("headache")
+        assert result == "Error: API Connection Error"
 
-        referral = MedReferral()
-        result = referral.get_specialist_recommendation("I have a headache")
+    @patch("litellm.completion")
+    def test_strips_whitespace(self, mock_completion):
+        mock_completion.return_value = _mock_response("Specialists:  Cardiologist  ,  Neurologist  ")
+        result = MedReferral().get_specialist_recommendation("symptoms")
+        assert result == "Cardiologist, Neurologist"
 
-        assert "Error:" in result
-        assert "API Connection Error" in result
-
-    @patch('litellm.completion')
-    def test_get_specialist_recommendation_strips_whitespace(self, mock_completion):
-        """Test that specialist names are properly stripped of whitespace."""
-        # Mock the LLM response with extra whitespace
-        mock_response = Mock()
-        mock_response.choices = [Mock()]
-        mock_response.choices[0].message.content = "Specialists:  Cardiologist  ,  Neurologist  "
-        mock_completion.return_value = mock_response
-
-        referral = MedReferral()
-        result = referral.get_specialist_recommendation("I have symptoms")
-
-        assert "Cardiologist" in result
-        assert "Neurologist" in result
-        # Ensure no leading/trailing whitespace in result
-        assert not result.startswith(" ")
-        assert not result.endswith(" ")
-
-    @patch('litellm.completion')
-    def test_get_specialist_recommendation_single_specialist(self, mock_completion):
-        """Test recommendation with a single specialist."""
-        mock_response = Mock()
-        mock_response.choices = [Mock()]
-        mock_response.choices[0].message.content = "Specialists: Dermatologist"
-        mock_completion.return_value = mock_response
-
-        referral = MedReferral()
-        result = referral.get_specialist_recommendation("I have a skin rash")
-
+    @patch("litellm.completion")
+    def test_single_specialist(self, mock_completion):
+        mock_completion.return_value = _mock_response("Specialists: Dermatologist")
+        result = MedReferral().get_specialist_recommendation("skin rash")
         assert result == "Dermatologist"
 
-    @patch('litellm.completion')
-    def test_get_specialist_recommendation_multiple_specialists(self, mock_completion):
-        """Test recommendation with multiple specialists."""
-        mock_response = Mock()
-        mock_response.choices = [Mock()]
-        mock_response.choices[0].message.content = "Specialists: Rheumatologist, Orthopedic Surgeon, Internal Medicine Doctor (Internist)"
-        mock_completion.return_value = mock_response
+    @patch("litellm.completion")
+    def test_multiple_specialists(self, mock_completion):
+        mock_completion.return_value = _mock_response("Specialists: Rheumatologist, Orthopedic Surgeon, Internal Medicine Doctor (Internist)")
+        result = MedReferral().get_specialist_recommendation("joint pain")
+        assert result == "Rheumatologist, Orthopedic Surgeon, Internal Medicine Doctor (Internist)"
 
-        referral = MedReferral()
-        result = referral.get_specialist_recommendation("I have joint pain and swelling")
+    @patch("litellm.completion")
+    def test_case_sensitivity(self, mock_completion):
+        mock_completion.return_value = _mock_response("Specialists: cardiologist, NEUROLOGIST, Dermatologist")
+        result = MedReferral().get_specialist_recommendation("symptoms")
+        assert result == "Dermatologist"
 
-        assert "Rheumatologist" in result
-        assert "Orthopedic Surgeon" in result
-        assert "Internal Medicine Doctor (Internist)" in result
-
-    @patch('litellm.completion')
-    def test_get_specialist_recommendation_case_sensitivity(self, mock_completion):
-        """Test that specialist matching is case-sensitive."""
-        mock_response = Mock()
-        mock_response.choices = [Mock()]
-        mock_response.choices[0].message.content = "Specialists: cardiologist, NEUROLOGIST, Dermatologist"
-        mock_completion.return_value = mock_response
-
-        referral = MedReferral()
-        result = referral.get_specialist_recommendation("I have symptoms")
-
-        # Should not match due to case sensitivity
-        assert "cardiologist" not in referral.medical_specialists
-        assert "NEUROLOGIST" not in referral.medical_specialists
-        # But the valid one should be there
-        assert "Dermatologist" in result
-
-    @patch('litellm.completion')
-    def test_get_specialist_recommendation_calls_litellm_with_correct_params(self, mock_completion):
-        """Test that litellm.completion is called with correct parameters."""
-        mock_response = Mock()
-        mock_response.choices = [Mock()]
-        mock_response.choices[0].message.content = "Specialists: Cardiologist"
-        mock_completion.return_value = mock_response
-
-        referral = MedReferral()
-        question = "I have chest pain"
-        referral.get_specialist_recommendation(question)
-
-        # Verify litellm.completion was called
-        mock_completion.assert_called_once()
-
-        # Verify the call includes correct parameters
-        call_kwargs = mock_completion.call_args.kwargs
-        assert call_kwargs['model'] == 'gpt-4o'
-        assert call_kwargs['max_tokens'] == 100
-        assert len(call_kwargs['messages']) == 2
-        assert call_kwargs['messages'][0]['role'] == 'system'
-        assert call_kwargs['messages'][1]['role'] == 'user'
-        assert question in call_kwargs['messages'][1]['content']
-
-    @patch('litellm.completion')
-    def test_get_specialist_recommendation_with_special_characters(self, mock_completion):
-        """Test handling of specialist names with special characters."""
-        mock_response = Mock()
-        mock_response.choices = [Mock()]
-        mock_response.choices[0].message.content = "Specialists: Otolaryngologist (ENT Specialist), Physical Medicine & Rehabilitation (PM&R) Specialist"
-        mock_completion.return_value = mock_response
-
-        referral = MedReferral()
-        result = referral.get_specialist_recommendation("I have ear and throat issues")
-
+    @patch("litellm.completion")
+    def test_specialist_with_parentheses(self, mock_completion):
+        mock_completion.return_value = _mock_response("Specialists: Otolaryngologist (ENT Specialist), Physical Medicine & Rehabilitation (PM&R) Specialist")
+        result = MedReferral().get_specialist_recommendation("ear and throat issues")
         assert "Otolaryngologist (ENT Specialist)" in result
-        assert "Physical Medicine & Rehabilitation (PM&R) Specialist)" in result
+        assert "Physical Medicine & Rehabilitation (PM&R) Specialist" in result
 
-    @patch('litellm.completion')
-    def test_get_specialist_recommendation_empty_question(self, mock_completion):
-        """Test handling of empty medical question."""
-        mock_response = Mock()
-        mock_response.choices = [Mock()]
-        mock_response.choices[0].message.content = "Specialists: General Surgeon"
-        mock_completion.return_value = mock_response
+    @patch("litellm.completion")
+    def test_calls_litellm_with_correct_params(self, mock_completion):
+        mock_completion.return_value = _mock_response("Specialists: Cardiologist")
+        question = "I have chest pain"
+        MedReferral().get_specialist_recommendation(question)
 
-        referral = MedReferral()
-        result = referral.get_specialist_recommendation("")
+        mock_completion.assert_called_once()
+        kwargs = mock_completion.call_args.kwargs
+        assert kwargs["model"] == "gemini-2.5-flash"
+        assert kwargs["max_tokens"] == 100
+        assert len(kwargs["messages"]) == 2
+        assert kwargs["messages"][0]["role"] == "system"
+        assert kwargs["messages"][1]["role"] == "user"
+        assert question in kwargs["messages"][1]["content"]
 
-        assert "General Surgeon" in result or "Error" in result
+    @patch("litellm.completion")
+    def test_empty_question(self, mock_completion):
+        mock_completion.return_value = _mock_response("Specialists: General Surgeon")
+        result = MedReferral().get_specialist_recommendation("")
+        assert result == "General Surgeon"
 
-    @patch('litellm.completion')
-    def test_get_specialist_recommendation_very_long_question(self, mock_completion):
-        """Test handling of very long medical question."""
-        mock_response = Mock()
-        mock_response.choices = [Mock()]
-        mock_response.choices[0].message.content = "Specialists: Neurologist"
-        mock_completion.return_value = mock_response
+    @patch("litellm.completion")
+    def test_very_long_question(self, mock_completion):
+        mock_completion.return_value = _mock_response("Specialists: Neurologist")
+        result = MedReferral().get_specialist_recommendation("I have " + "symptoms " * 100)
+        assert result == "Neurologist"
 
-        referral = MedReferral()
-        long_question = "I have " + "symptoms " * 100
-        result = referral.get_specialist_recommendation(long_question)
+    @patch("litellm.completion")
+    def test_specialist_singular_label(self, mock_completion):
+        mock_completion.return_value = _mock_response("Specialist: Dermatologist")
+        result = MedReferral().get_specialist_recommendation("skin issue")
+        assert result == "Dermatologist"
 
-        assert "Neurologist" in result or "Error" in result
+    @patch("litellm.completion")
+    def test_all_invalid_returns_raw_specialists_with_disclaimer(self, mock_completion):
+        mock_completion.return_value = _mock_response("Specialists: FakeDoc, NotADoc")
+        result = MedReferral().get_specialist_recommendation("mystery illness")
+        assert "FakeDoc, NotADoc" in result
+        assert "Please verify with a healthcare professional." in result
+
+    @patch("litellm.completion")
+    def test_mixed_validity_keeps_only_valid(self, mock_completion):
+        mock_completion.return_value = _mock_response("Specialists: Cardiologist, Witch Doctor, Pulmonologist")
+        result = MedReferral().get_specialist_recommendation("chest pain")
+        assert "Cardiologist" in result
+        assert "Pulmonologist" in result
+        assert "Witch Doctor" not in result
 
 
 class TestMedReferralIntegration:
-    """Integration tests for the MedReferral system."""
+    @patch("litellm.completion")
+    def test_cardiac_workflow(self, mock_completion):
+        mock_completion.return_value = _mock_response("Specialists: Cardiologist, Pulmonologist")
+        result = MedReferral().get_specialist_recommendation("chest pain and shortness of breath")
+        assert result == "Cardiologist, Pulmonologist"
 
-    @patch('litellm.completion')
-    def test_full_workflow_cardiac_issue(self, mock_completion):
-        """Test full workflow for a cardiac issue."""
-        mock_response = Mock()
-        mock_response.choices = [Mock()]
-        mock_response.choices[0].message.content = "Specialists: Cardiologist, Pulmonologist"
-        mock_completion.return_value = mock_response
+    @patch("litellm.completion")
+    def test_dermatology_workflow(self, mock_completion):
+        mock_completion.return_value = _mock_response("Specialists: Dermatologist")
+        result = MedReferral().get_specialist_recommendation("rash on my skin")
+        assert result == "Dermatologist"
 
-        referral = MedReferral()
-        result = referral.get_specialist_recommendation("I have chest pain and shortness of breath")
+    @patch("litellm.completion")
+    def test_psychiatry_workflow_filters_invalid(self, mock_completion):
+        mock_completion.return_value = _mock_response("Specialists: Psychiatrist, Psychologist")
+        result = MedReferral().get_specialist_recommendation("depression")
+        assert result == "Psychiatrist"
 
-        assert "Cardiologist" in result
-        assert "Pulmonologist" in result
 
-    @patch('litellm.completion')
-    def test_full_workflow_dermatological_issue(self, mock_completion):
-        """Test full workflow for a dermatological issue."""
-        mock_response = Mock()
-        mock_response.choices = [Mock()]
-        mock_response.choices[0].message.content = "Specialists: Dermatologist"
-        mock_completion.return_value = mock_response
-
-        referral = MedReferral()
-        result = referral.get_specialist_recommendation("I have a rash on my skin")
-
-        assert "Dermatologist" in result
-
-    @patch('litellm.completion')
-    def test_full_workflow_psychiatric_issue(self, mock_completion):
-        """Test full workflow for a psychiatric issue."""
-        mock_response = Mock()
-        mock_response.choices = [Mock()]
-        mock_response.choices[0].message.content = "Specialists: Psychiatrist, Psychologist"
-        mock_completion.return_value = mock_response
-
-        referral = MedReferral()
-        result = referral.get_specialist_recommendation("I have been experiencing depression")
-
-        # Psychologist is not in the valid list, so only Psychiatrist should remain
-        assert "Psychiatrist" in result
-        assert "Psychologist" not in result
+def _mock_response(content: str):
+    mr = Mock()
+    mr.choices = [Mock()]
+    mr.choices[0].message.content = content
+    return mr
