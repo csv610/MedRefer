@@ -96,7 +96,7 @@ class TestGetSpecialistRecommendation:
 
         mock_completion.assert_called_once()
         kwargs = mock_completion.call_args.kwargs
-        assert kwargs["model"] == "gemini-2.5-flash"
+        assert kwargs["model"] == "ollama/gemma4"
         assert kwargs["max_tokens"] == 100
         assert len(kwargs["messages"]) == 2
         assert kwargs["messages"][0]["role"] == "system"
